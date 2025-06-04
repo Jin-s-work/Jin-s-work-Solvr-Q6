@@ -1,7 +1,10 @@
+// client/src/App.tsx
+
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import SleepList from "./pages/SleepList";
 import AddEditSleep from "./pages/AddEditSleep";
+import ChartDashboard from "./pages/ChartDashboard"; // ★ 추가
 
 const App: React.FC = () => {
   return (
@@ -12,12 +15,20 @@ const App: React.FC = () => {
           <Link to="/" className="text-2xl font-semibold text-gray-800">
             SleepLog
           </Link>
-          <Link
-            to="/add"
-            className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600"
-          >
-            Add Record
-          </Link>
+          <div className="space-x-3">
+            <Link
+              to="/add"
+              className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600"
+            >
+              Add Record
+            </Link>
+            <Link
+              to="/charts"
+              className="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600"
+            >
+              View Charts
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -27,6 +38,7 @@ const App: React.FC = () => {
           <Route path="/" element={<SleepList />} />
           <Route path="/add" element={<AddEditSleep />} />
           <Route path="/edit/:id" element={<AddEditSleep />} />
+          <Route path="/charts" element={<ChartDashboard />} /> {/* ★ 추가 */}
         </Routes>
       </main>
     </div>

@@ -4,8 +4,8 @@ import { createSleep, getSleep, updateSleep } from "../api/sleeps";
 
 const AddEditSleep: React.FC = () => {
   const [date, setDate] = useState<string>("");
-  const [sleepStart, setSleepStart] = useState<string>("");
-  const [sleepEnd, setSleepEnd] = useState<string>("");
+  const [sleep_start, setSleepStart] = useState<string>("");
+  const [sleep_end, setSleepEnd] = useState<string>("");
   const [note, setNote] = useState<string>("");
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -15,9 +15,9 @@ const AddEditSleep: React.FC = () => {
     if (id) {
       getSleep(Number(id))
         .then((data) => {
-          setDate(data.date);
-          setSleepStart(data.sleepStart);
-          setSleepEnd(data.sleepEnd);
+          setDate(data.date)
+          setSleepStart(data.sleep_start);
+          setSleepEnd(data.sleep_end);
           setNote(data.note);
         })
         .catch((err) => {
@@ -32,7 +32,7 @@ const AddEditSleep: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!date || !sleepStart || !sleepEnd) {
+    if (!date || !sleep_start || !sleep_end) {
       alert("날짜와 수면 시작/종료 시간은 필수입니다.");
       return;
     }
@@ -40,8 +40,8 @@ const AddEditSleep: React.FC = () => {
     try {
       const payload = {
         date,
-        sleep_start: sleepStart,
-        sleep_end: sleepEnd,
+        sleep_start: sleep_start,
+        sleep_end: sleep_end,
         note: note || ""
       };
 
@@ -79,7 +79,7 @@ const AddEditSleep: React.FC = () => {
           <label className="block text-gray-700">수면 시작</label>
           <input
             type="time"
-            value={sleepStart}
+            value={sleep_start}
             onChange={(e) => setSleepStart(e.target.value)}
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             required
@@ -89,7 +89,7 @@ const AddEditSleep: React.FC = () => {
           <label className="block text-gray-700">수면 종료</label>
           <input
             type="time"
-            value={sleepEnd}
+            value={sleep_end}
             onChange={(e) => setSleepEnd(e.target.value)}
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             required

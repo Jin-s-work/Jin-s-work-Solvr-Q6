@@ -46,7 +46,7 @@ const SleepList: React.FC = () => {
               <div>
                 <p className="text-lg font-semibold">{record.date}</p>
                 <p className="text-gray-600">
-                  {record.sleepStart} → {record.sleepEnd}
+                  {record.sleep_start} → {record.sleep_end}
                 </p>
                 {record.note && (
                   <p className="mt-1 text-gray-500">특이사항: {record.note}</p>

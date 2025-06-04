@@ -34,8 +34,8 @@ export const users = sqliteTable("users", {
 export const sleeps = sqliteTable("sleeps", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   date: text("date").notNull(),
-  sleepStart: text("sleep_start").notNull(),
-  sleepEnd: text("sleep_end").notNull(),
+  sleep_start: text("sleep_start").notNull(),
+  sleep_end: text("sleep_end").notNull(),
   note: text("note").notNull().default(""),
   createdAt: text("created_at")
     .notNull()

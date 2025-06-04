@@ -118,3 +118,14 @@ React + Vite(클라이언트)와 Fastify + Drizzle ORM + SQLite(서버)로 구�
 - **Fastify** (고성능 Node.js 웹 프레임워크)
 - **Drizzle ORM** (타입 안정성을 갖춘 ORM)
 - **SQLite** (로컬 환경용 파일 기반 경량 DB)
+
+Task2: 수면 기록 추가 기능 구현 (Add Record)
+/api/sleeps 엔드포인트에 POST 요청으로 수면 기록 추가 가능
+
+프론트엔드 폼(AddEditSleep.tsx)을 통해 날짜, 수면 시작/종료 시간, 특이사항 입력 후 저장
+
+저장된 데이터는 /api/sleeps에서 조회 가능
+
+백엔드 SleepService 및 sleepRoutes에 create 로직 완성
+
+Drizzle ORM의 eq() 오류 수정 적용
