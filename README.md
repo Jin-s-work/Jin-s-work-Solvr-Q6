@@ -119,13 +119,25 @@ React + Vite(클라이언트)와 Fastify + Drizzle ORM + SQLite(서버)로 구�
 - **Drizzle ORM** (타입 안정성을 갖춘 ORM)
 - **SQLite** (로컬 환경용 파일 기반 경량 DB)
 
-Task2: 수면 기록 추가 기능 구현 (Add Record)
-/api/sleeps 엔드포인트에 POST 요청으로 수면 기록 추가 가능
+## 📝 Changelog
 
-프론트엔드 폼(AddEditSleep.tsx)을 통해 날짜, 수면 시작/종료 시간, 특이사항 입력 후 저장
+### Task1: Mission Complete!
+- 기본 수면 기록 CRUD 기능 구현 (Fastify + Drizzle ORM + React)
 
-저장된 데이터는 /api/sleeps에서 조회 가능
+### Task2: Mission Complete!
+- 더미 데이터 자동 삽입 로직 추가 (14일치 샘플 수면 기록)
+- Recharts 기반 통계 대시보드 (`ChartDashboard.tsx`) 추가
 
-백엔드 SleepService 및 sleepRoutes에 create 로직 완성
+### Task3: Mission Complete! (AI 수면 진단/조언 기능)
+- Google AI Studio Gemma LLM 연동을 위해 Python 스크립트(`generate_advice.py`) 생성
+  - `google-genai` SDK 사용: `GEMINI_API_KEY` 환경 변수 필요
+  - Prompt 구성 후 `gemma-3-1b-it` 모델에 요청하여 조언 텍스트 생성
+- Fastify 핸들러(`POST /api/sleeps/advice`)에서 Python 스크립트를 `child_process.execFile`로 호출
+  - 서버에서 최근 N일치 수면 기록을 취합해 표준 입력으로 전달
+  - Python 스크립트 실행 결과(AI 조언)를 JSON `{ advice: string }`로 응답
+- 클라이언트에 **AI Advice** 페이지(`Advice.tsx`) 추가
+  - 사용자가 “최근 며칠치”를 지정해 AI 조언 생성 요청
+  - 서버로부터 받은 조언을 친근한 한국어 문장으로 화면에 표시
+  - 프론트엔드 UI에 AI 조언 요청 버튼과 응답 결과 출력 영역 추가
 
-Drizzle ORM의 eq() 오류 수정 적용
+- Task3 : pip이 Mac에서 잘 실행되지 않아서 (.venv) 가상환경에서 실행하였습니다.

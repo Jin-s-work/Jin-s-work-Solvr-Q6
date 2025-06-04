@@ -1,5 +1,7 @@
 import { FastifyPluginAsync } from "fastify";
 import { AppContext } from "../types/context";
+import { execFile } from "child_process";
+import path from "path";
 
 interface SleepBody {
   date: string;
@@ -107,6 +109,50 @@ export const sleepRoutes: FastifyPluginAsync<{
         request.log.error(err);
         reply.status(500).send({ message: "Server Error" });
       }
+    }
+  });
+
+  // 6) POST /advice → 최근 수면 기록 기반 AI 조언 생성
+  fastify.post<{ Body: { days?: number } }>("/advice", async (request, reply) => {
+    const days = request.body.days ?? 7;
+
+    try {
+      const allRecords = await sleepService.getAll();
+      const recentRecords = allRecords
+        .sort((a, b) => (a.date < b.date ? 1 : -1))
+        .slice(0, days);
+
+      const sleepSummary = recentRecords
+        .map(
+          (r) =>
+            `• ${r.date}: ${r.sleep_start} → ${r.sleep_end} (${r.note || "특이사항 없음"})`
+        )
+        .join("\n");
+
+      const scriptPath = path.join(__dirname, "../../llm/generate_advice.py");
+
+      return new Promise((resolve, reject) => {
+        const pythonProcess = execFile(
+          "python3",
+          [scriptPath, "--days", String(days)],
+          { env: process.env },
+          (error, stdout, stderr) => {
+            if (error) {
+              request.log.error("Python 스크립트 실행 오류:", stderr || error);
+              reply.status(500).send({ message: "AI 조언 생성 중 오류" });
+              return reject(error);
+            }
+            reply.send({ advice: stdout.trim() });
+            resolve(null);
+          }
+        );
+
+        pythonProcess.stdin?.write(sleepSummary);
+        pythonProcess.stdin?.end();
+      });
+    } catch (err) {
+      request.log.error(err);
+      reply.status(500).send({ message: "AI 조언 생성 실패" });
     }
   });
 };

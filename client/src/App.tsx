@@ -5,6 +5,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import SleepList from "./pages/SleepList";
 import AddEditSleep from "./pages/AddEditSleep";
 import ChartDashboard from "./pages/ChartDashboard"; // ★ 추가
+import SleepAdvice from "./pages/SleepAdvice"; // ★ 추가
 
 const App: React.FC = () => {
   return (
@@ -28,6 +29,12 @@ const App: React.FC = () => {
             >
               View Charts
             </Link>
+            <Link
+              to="/advice"
+              className="bg-purple-500 text-white px-3 py-2 rounded-md hover:bg-purple-600"
+            >
+              AI Advice
+            </Link>
           </div>
         </div>
       </nav>
@@ -39,6 +46,7 @@ const App: React.FC = () => {
           <Route path="/add" element={<AddEditSleep />} />
           <Route path="/edit/:id" element={<AddEditSleep />} />
           <Route path="/charts" element={<ChartDashboard />} /> {/* ★ 추가 */}
+          <Route path="/advice" element={<SleepAdvice />} /> {/* ★ 추가 */}
         </Routes>
       </main>
     </div>

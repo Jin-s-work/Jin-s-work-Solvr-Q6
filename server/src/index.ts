@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import env from './config/env'
@@ -7,6 +10,7 @@ import { createUserService } from './services/userService'
 import { createSleepService } from './services/sleepService'
 import { createRoutes } from './routes'
 import { AppContext } from './types/context'
+
 
 // Fastify 인스턴스 생성
 const fastify = Fastify({
@@ -49,6 +53,7 @@ async function start() {
 
     // 서버 시작
     await fastify.listen({ port: env.PORT, host: env.HOST })
+    console.log("✅ GEMINI_API_KEY:", process.env.GEMINI_API_KEY);
 
     console.log(`서버가 http://${env.HOST}:${env.PORT} 에서 실행 중입니다.`)
   } catch (error) {
