@@ -4,6 +4,7 @@ import env from './config/env'
 import { initializeDatabase, getDb } from './db'
 import runMigration from './db/migrate'
 import { createUserService } from './services/userService'
+import { createSleepService } from './services/sleepService'
 import { createRoutes } from './routes'
 import { AppContext } from './types/context'
 
@@ -38,11 +39,13 @@ async function start() {
     // 서비스 및 컨텍스트 초기화
     const db = await getDb()
     const context: AppContext = {
-      userService: createUserService({ db })
+      userService: createUserService({ db }),
+      sleepService: createSleepService()
     }
 
-    // 라우트 등록
-    await fastify.register(createRoutes(context))
+    // ✅ [수정] createRoutes를 실행하지 말고 그대로 넘기고,
+    //          context는 두 번째 인자로 넘긴다
+    await fastify.register(createRoutes, { context })
 
     // 서버 시작
     await fastify.listen({ port: env.PORT, host: env.HOST })

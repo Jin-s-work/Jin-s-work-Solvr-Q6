@@ -1,21 +1,19 @@
-import { drizzle } from 'drizzle-orm/better-sqlite3'
-import Database from 'better-sqlite3'
-import env from '../config/env'
-import * as schema from './schema'
-import { Database as DrizzleDatabase } from '../types/database'
+import runMigration from './migrate';
+import { db } from './client';  // 이미 drizzle 인스턴스를 export 중
+import { Database as DrizzleDatabase } from '../types/database';
 
-let db: DrizzleDatabase | null = null
+let initialized = false;
 
-export async function getDb(): Promise<DrizzleDatabase> {
-  if (!db) {
-    const sqlite = new Database(env.DATABASE_URL)
-    db = drizzle(sqlite, { schema }) as DrizzleDatabase
+export async function initializeDatabase() {
+  if (!initialized) {
+    await runMigration();       // 마이그레이션 실행
+    initialized = true;
   }
-  return db
 }
 
-export async function initializeDatabase(): Promise<DrizzleDatabase> {
-  return getDb()
+export function getDb(): DrizzleDatabase {
+  if (!initialized) {
+    throw new Error('Database is not initialized. Call initializeDatabase() first.');
+  }
+  return db;
 }
-
-export default { initializeDatabase, getDb }

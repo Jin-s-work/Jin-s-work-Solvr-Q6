@@ -1,27 +1,36 @@
-import { Routes, Route } from 'react-router-dom'
-import MainLayout from './layouts/MainLayout'
-import HomePage from './routes/HomePage'
-import UsersPage from './routes/UsersPage'
-import UserDetailPage from './routes/UserDetailPage'
-import CreateUserPage from './routes/CreateUserPage'
-import EditUserPage from './routes/EditUserPage'
-import NotFoundPage from './routes/NotFoundPage'
+import React from "react";
+import { Routes, Route, Link } from "react-router-dom";
+import SleepList from "./pages/SleepList";
+import AddEditSleep from "./pages/AddEditSleep";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <Routes>
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<HomePage />} />
-        <Route path="users">
-          <Route index element={<UsersPage />} />
-          <Route path="new" element={<CreateUserPage />} />
-          <Route path=":id" element={<UserDetailPage />} />
-          <Route path=":id/edit" element={<EditUserPage />} />
-        </Route>
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    </Routes>
-  )
-}
+    <div className="min-h-screen bg-gray-100">
+      {/* 네비게이션 바 */}
+      <nav className="bg-white shadow mb-6">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <Link to="/" className="text-2xl font-semibold text-gray-800">
+            SleepLog
+          </Link>
+          <Link
+            to="/add"
+            className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600"
+          >
+            Add Record
+          </Link>
+        </div>
+      </nav>
 
-export default App
+      {/* 메인 컨텐츠 */}
+      <main className="container mx-auto px-4">
+        <Routes>
+          <Route path="/" element={<SleepList />} />
+          <Route path="/add" element={<AddEditSleep />} />
+          <Route path="/edit/:id" element={<AddEditSleep />} />
+        </Routes>
+      </main>
+    </div>
+  );
+};
+
+export default App;

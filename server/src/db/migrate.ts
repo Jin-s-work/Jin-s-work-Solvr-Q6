@@ -3,7 +3,7 @@ import Database from 'better-sqlite3'
 import { mkdir } from 'fs/promises'
 import { dirname } from 'path'
 import env from '../config/env'
-import { users } from './schema'
+import { users, sleeps } from './schema'       // ★ sleeps 스키마 추가
 import { UserRole } from '../types'
 
 // 데이터베이스 디렉토리 생성 함수
@@ -19,7 +19,7 @@ async function ensureDatabaseDirectory() {
   }
 }
 
-// 초기 사용자 데이터
+// 초기 사용자 데이터 (기존 코드)
 const initialUsers = [
   {
     name: '관리자',
@@ -47,17 +47,15 @@ const initialUsers = [
 // 데이터베이스 마이그레이션 및 초기 데이터 삽입
 async function runMigration() {
   try {
-    // 데이터베이스 디렉토리 생성
+    // 1) 데이터베이스 디렉토리 생성
     await ensureDatabaseDirectory()
 
-    // 데이터베이스 연결
+    // 2) 데이터베이스 연결
     const sqlite = new Database(env.DATABASE_URL)
     const db = drizzle(sqlite)
 
-    // 스키마 생성
-    console.log('데이터베이스 스키마 생성 중...')
-
-    // users 테이블 생성
+    // 3) users 테이블 생성
+    console.log('users 테이블 생성 중...')
     sqlite.exec(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,14 +67,10 @@ async function runMigration() {
       )
     `)
 
-    // 초기 데이터 삽입
-    console.log('초기 데이터 삽입 중...')
-
-    // 기존 데이터 확인
-    const existingUsers = db.select().from(users)
-
-    if ((await existingUsers).length === 0) {
-      // 초기 사용자 데이터 삽입
+    // 4) 초기 사용자 데이터 삽입
+    console.log('초기 사용자 데이터 삽입 중...')
+    const existingUsers = await db.select().from(users)
+    if (existingUsers.length === 0) {
       for (const user of initialUsers) {
         await db.insert(users).values(user)
       }
@@ -84,6 +78,31 @@ async function runMigration() {
     } else {
       console.log('사용자 데이터가 이미 존재합니다. 초기 데이터 삽입을 건너뜁니다.')
     }
+
+    // ====================================================
+    // 5) sleeps 테이블 생성 (★ 새로 추가된 부분)
+    console.log('sleeps 테이블 생성 중...')
+    sqlite.exec(`
+      CREATE TABLE IF NOT EXISTS sleeps (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date TEXT NOT NULL,
+        sleep_start TEXT NOT NULL,
+        sleep_end TEXT NOT NULL,
+        note TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    `)
+
+    // (★ 원한다면 초기 sleep 데이터 삽입 로직 추가 가능)
+    // 예시: 첫 레코드가 없을 때 기본값 하나 삽입
+    const existingSleeps = await db.select().from(sleeps)
+    if (existingSleeps.length === 0) {
+      console.log('기본 수면 데이터가 없습니다. 초기값을 삽입하지 않습니다.')
+    } else {
+      console.log('기존 수면 데이터가 이미 존재합니다. 초기 삽입 건너뜁니다.')
+    }
+    // ====================================================
 
     console.log('데이터베이스 마이그레이션이 완료되었습니다.')
   } catch (error) {
